@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17121c">
+<title>Yoru no Kakurega ♡</title>
+
+<style>
+:root{
+ --bg:#17121c;--panel:#261e2b;--panel2:#322638;
+ --primary:#e7b85c;--secondary:#a75d78;
+ --text:#fff4e8;--muted:#cbb9c4;--line:#ffffff20;
+ --shadow:0 18px 55px #0007;--radius:22px
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+ margin:0;min-height:100vh;color:var(--text);
+ font-family:Georgia,"Times New Roman",serif;
+ background:radial-gradient(ellipse at 50% -15%,#654354 0,transparent 45%),
+ linear-gradient(145deg,#17121c,#211824 55%,#17121c);
+ transition:background .5s,color .3s
+}
+button,input,textarea,select{font:inherit}
+button{
+ border:1px solid transparent;border-radius:14px;padding:11px 16px;
+ background:var(--primary);color:#211722;cursor:pointer;
+ transition:transform .2s,filter .2s;font-weight:bold
+}
+button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+button.secondary{background:transparent;color:var(--text);border-color:var(--line)}
+button.small-btn{padding:8px 11px;font-size:13px}
+input,textarea,select{
+ width:100%;padding:13px;margin:7px 0;border:1px solid #b18b9166;
+ border-radius:12px;background:#17131dcc;color:#fff;outline:none
+}
+input:focus,textarea:focus,select:focus{
+ border-color:var(--primary);box-shadow:0 0 0 3px #e7b85c22
+}
+textarea{min-height:110px;resize:vertical}
+label{display:block;color:var(--muted);font-size:13px;margin-top:10px}
+header{
+ position:sticky;top:0;z-index:20;display:flex;align-items:center;
+ justify-content:space-between;gap:16px;padding:14px 4%;
+ background:#17121ceF;border-bottom:1px solid var(--line);
+ backdrop-filter:blur(16px)
+}
+.logo{font-size:18px;letter-spacing:2px;color:var(--primary);white-space:nowrap}
+nav{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+nav button{background:transparent;color:var(--text);padding:8px 10px;font-size:13px}
+nav button:hover{background:var(--panel2);color:var(--primary)}
+main{width:min(1120px,94%);margin:auto;padding:30px 0 70px}
+.page{display:none;animation:pageIn .45s ease}
+.page.active{display:block}
+@keyframes pageIn{
+ from{opacity:0;transform:translateY(12px)}
+ to{opacity:1;transform:none}
+}
+.hero{text-align:center;padding:55px 15px 38px}
+h1{font-size:clamp(35px,6vw,65px);color:var(--primary);margin:12px 0}
+h2,h3{color:var(--primary)}
+p{line-height:1.7;color:var(--muted)}
+.subtitle{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--muted)}
+.card{
+ background:linear-gradient(145deg,#302538ed,#211a28f2);
+ border:1px solid var(--line);border-radius:var(--radius);
+ padding:22px;box-shadow:var(--shadow)
+}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.feature{min-height:150px;cursor:pointer;transition:.25s}
+.feature:hover{transform:translateY(-5px);border-color:var(--primary)}
+.emoji{font-size:32px}
+.center{text-align:center}
+.small{font-size:12px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.castle-scene{
+ position:relative;overflow:hidden;border:1px solid #e7b85c44;
+ border-radius:28px;
+ background:linear-gradient(90deg,#1b1420dd,#2a1b27bb),
+ repeating-linear-gradient(90deg,#4d2d2c 0 8px,#21151d 8px 17px);
+ box-shadow:inset 0 0 90px #0009,var(--shadow)
+}
+.castle-scene:before{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background:repeating-linear-gradient(90deg,transparent 0 17%,#e7b85c14 17.2% 17.6%,transparent 18% 34%)
+}
+.lantern{
+ display:inline-block;color:#ffd58a;
+ text-shadow:0 0 15px #ffb74d,0 0 35px #ff8a3d;
+ animation:lantern 3s ease-in-out infinite
+}
+@keyframes lantern{50%{filter:brightness(1.5);transform:translateY(-4px)}}
+.castle-doors{display:flex;justify-content:center;gap:10px;margin:22px auto;max-width:460px}
+.door{
+ height:92px;flex:1;border:2px solid #a77a4b;border-radius:5px;
+ background:repeating-linear-gradient(90deg,#4b2929 0 5px,#6a3c36 6px 10px);
+ box-shadow:inset 0 0 20px #0009;animation:doorGlow 4s infinite
+}
+@keyframes doorGlow{50%{box-shadow:inset 0 0 25px #e8a85c55,0 0 15px #e8a85c22}}
+.character-card{position:relative;text-align:center;overflow:hidden;min-height:150px}
+.character-card.selected{
+ outline:2px solid var(--primary);
+ box-shadow:0 0 0 4px #e7b85c22,var(--shadow)
+}
+.character-icon{font-size:34px;margin:5px}
+.character-card button{margin-top:8px}
+.profile-switch{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.profile-switch button.active{background:var(--secondary);color:white}
+#toast{
+ position:fixed;left:50%;bottom:25px;transform:translateX(-50%);
+ background:#251b2b;color:#fff;border:1px solid var(--primary);
+ padding:12px 18px;border-radius:14px;z-index:60;opacity:0;
+ pointer-events:none;transition:.3s
+}
+#toast.show{opacity:1}
+#music{
+ position:fixed;right:15px;bottom:15px;z-index:30;
+ display:flex;gap:7px;align-items:center;padding:9px;
+ border:1px solid var(--line);border-radius:18px;
+ background:#211925ed;box-shadow:var(--shadow)
+}
+#music span{font-size:12px;color:var(--text)}
+#music button{padding:8px 10px}
+#musicFrame{position:fixed;width:1px;height:1px;opacity:.01;pointer-events:none;bottom:0;left:0}
+.petals{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:2}
+.petal{
+ position:absolute;top:-30px;color:#f5b5ca;
+ animation:fall linear forwards;text-shadow:0 0 8px #f5b5ca88
+}
+@keyframes fall{to{transform:translateY(110vh) rotate(500deg);opacity:0}}
+.chat-log{
+ display:flex;flex-direction:column;gap:10px;min-height:180px;
+ max-height:420px;overflow:auto;padding:8px
+}
+.bubble{
+ max-width:80%;padding:12px 15px;border-radius:17px;
+ background:var(--panel2);border:1px solid var(--line);
+ align-self:flex-start;overflow-wrap:anywhere
+}
+.bubble.mine{
+ align-self:flex-end;
+ background:color-mix(in srgb,var(--secondary) 35%,var(--panel))
+}
+.bubble small{display:block;opacity:.7;font-size:10px;margin-top:5px}
+.letter{border-left:3px solid var(--primary);margin:12px 0}
+.gallery-img{width:100%;max-height:240px;object-fit:cover;border-radius:14px}
+.mood-option{cursor:pointer;text-align:center}
+.mood-option:hover{border-color:var(--primary)}
+footer{text-align:center;padding:28px;color:var(--muted);border-top:1px solid var(--line)}
+@media(max-width:720px){
+ header{align-items:flex-start;flex-direction:column}
+ nav{justify-content:flex-start}
+ nav button{font-size:12px}
+ .hero{padding:35px 8px}
+ main{padding-top:15px}
+ #music span{display:none}
+ .card{padding:17px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{
+  animation-duration:.01ms!important;
+  transition-duration:.01ms!important;
+  scroll-behavior:auto!important
+ }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">🌙 YORU NO KAKUREGA</div>
+ <nav aria-label="Main navigation">
+  <button onclick="showPage('dashboard')">Home</button>
+  <button onclick="showPage('chat')">Chat</button>
+  <button onclick="showPage('letters')">Letters</button>
+  <button onclick="showPage('jar')">Question Jar</button>
+  <button onclick="showPage('mood')">Mood</button>
+  <button onclick="showPage('gallery')">Memories</button>
+  <button onclick="showPage('surprise')">Surprise</button>
+  <button onclick="showPage('settings')">Theme Studio</button>
+ </nav>
+</header>
+
+<main>
+
+<!-- PAGE 1: WELCOME -->
+<section id="welcome" class="page active">
+ <div class="hero castle-scene">
+  <div class="lantern" style="font-size:45px">🏮　🏮　🏮</div>
+  <div class="subtitle">A secret hideaway beyond the ordinary</div>
+  <h1>Yoru no Kakurega</h1>
+  <p style="font-size:18px;color:var(--text)">A Secret World, Just for Two.</p>
+  <p>Somewhere between dreams, memories and endless conversations...</p>
+  <div class="castle-doors">
+   <div class="door"></div><div class="door"></div><div class="door"></div>
+  </div>
+  <button onclick="showPage('gate')">Enter Our World ✨</button>
+  <p class="small">A little Infinity Castle-inspired universe, made with care.</p>
+ </div>
+</section>
+
+<!-- PAGE 2: SECRET GATE -->
+<section id="gate" class="page">
+ <div class="hero">
+  <div class="lantern" style="font-size:42px">🏮</div>
+  <h1>The Secret Gate</h1>
+  <p>Only those who know the secret may enter.</p>
+  <div class="card" style="max-width:430px;margin:auto">
+   <input id="secretCode" type="password" placeholder="Enter your secret code" autocomplete="off">
+   <button onclick="unlock()">Unlock the Castle</button>
+   <p id="gateMessage" aria-live="polite"></p>
+   <p class="small">Demo gate only: this code is checked in your browser, not secure authentication.</p>
+  </div>
+ </div>
+</section>
+
+<!-- PAGE 3: DASHBOARD -->
+<section id="dashboard" class="page">
+ <div class="hero castle-scene">
+  <div class="subtitle">Welcome to our little universe</div>
+  <h1>Our Little World ♡</h1>
+  <p id="greeting">A place where every little moment matters.</p>
+  <div class="character-icon" id="dashCharacter">🎀 ⚡</div>
+  <div class="lantern">🏮　🏮　🏮</div>
+ </div>
+
+ <div class="grid" style="margin-top:18px">
+  <div class="card feature" onclick="showPage('chat')">
+   <div class="emoji">💬</div><h3>Private Chat</h3><p>Our little conversations.</p>
+  </div>
+  <div class="card feature" onclick="showPage('letters')">
+   <div class="emoji">💌</div><h3>Secret Letters</h3><p>Words from the heart.</p>
+  </div>
+  <div class="card feature" onclick="showPage('jar')">
+   <div class="emoji">🫙</div><h3>Question Jar</h3><p>Discover something new.</p>
+  </div>
+  <div class="card feature" onclick="showPage('mood')">
+   <div class="emoji">🌷</div><h3>Mood Garden</h3><p>How are you feeling today?</p>
+  </div>
+  <div class="card feature" onclick="showPage('gallery')">
+   <div class="emoji">📷</div><h3>Memory Gallery</h3><p>Little moments, forever.</p>
+  </div>
+  <div class="card feature" onclick="showPage('surprise')">
+   <div class="emoji">🎁</div><h3>Surprise Corner</h3><p>A little unexpected happiness.</p>
+  </div>
+  <div class="card feature" onclick="showPage('settings')">
+   <div class="emoji">🎨</div><h3>Theme Studio</h3><p>Choose your own character world.</p>
+  </div>
+ </div>
+</section>
+
+<!-- PAGE 4: CHAT -->
+<section id="chat" class="page">
+ <h1>Private Chat Room 💬</h1>
+ <p>Every conversation has its own little magic.</p>
+ <div class="card">
+  <div class="profile-switch">
+   <button id="chatP1" class="active" onclick="setChatPerson(1)">Person 1</button>
+   <button id="chatP2" class="secondary" onclick="setChatPerson(2)">Person 2</button>
+  </div>
+  <div id="messages" class="chat-log" aria-live="polite"></div>
+  <textarea id="chatInput" placeholder="Write something sweet..." rows="2"></textarea>
+  <div class="actions">
+   <button onclick="sendMessage()">Send ♡</button>
+   <button class="secondary" onclick="clearChat()">Clear local chat</button>
+  </div>
+  <p class="small">Local demo: messages stay in this browser only. They do not sync to the other person's device.</p>
+ </div>
+</section>
+
+<!-- PAGE 5: SECRET LETTERS -->
+<section id="letters" class="page">
+ <h1>Secret Letters 💌</h1>
+ <p>Some feelings are best written down.</p>
+ <div class="card">
+  <input id="letterTitle" placeholder="Letter title">
+  <select id="letterFrom">
+   <option>Person 1</option>
+   <option>Person 2</option>
+  </select>
+  <textarea id="letterBody" placeholder="Write your heart out..."></textarea>
+  <button onclick="saveLetter()">Seal Letter 🔒</button>
+ </div>
+ <h2>Our Letter Shelf</h2>
+ <div id="letterShelf" class="grid"></div>
+</section>
+
+<!-- PAGE 6: QUESTION JAR -->
+<section id="jar" class="page center">
+ <div class="hero">
+  <div class="emoji">🫙✨</div>
+  <h1>Question Jar</h1>
+  <p>One little question can start a beautiful conversation.</p>
+  <div class="card" style="max-width:650px;margin:auto">
+   <select id="questionCategory">
+    <option value="all">All Questions</option>
+    <option value="fun">Fun</option>
+    <option value="deep">Deep Talks</option>
+    <option value="memories">Memories</option>
+   </select>
+   <h2 id="questionText">Pick a question from our magical jar ♡</h2>
+   <button onclick="pickQuestion()">Pick a Question 🌸</button>
+  </div>
+ </div>
+</section>
+
+<!-- PAGE 7: MOOD GARDEN -->
+<section id="mood" class="page center">
+ <h1>Mood Garden 🌷</h1>
+ <p>Choose the flower that matches your mood.</p>
+ <div class="grid">
+  <div class="card mood-option" onclick="chooseMood('Happy','🌻')"><div class="emoji">🌻</div><h3>Happy</h3></div>
+  <div class="card mood-option" onclick="chooseMood('Calm','🌿')"><div class="emoji">🌿</div><h3>Calm</h3></div>
+  <div class="card mood-option" onclick="chooseMood('Sad','🌧️')"><div class="emoji">🌧️</div><h3>Sad</h3></div>
+  <div class="card mood-option" onclick="chooseMood('Excited','✨')"><div class="emoji">✨</div><h3>Excited</h3></div>
+  <div class="card mood-option" onclick="chooseMood('Tired','🌙')"><div class="emoji">🌙</div><h3>Tired</h3></div>
+  <div class="card mood-option" onclick="chooseMood('Loved','💗')"><div class="emoji">💗</div><h3>Loved</h3></div>
+ </div>
+ <h2 id="moodResult">Your feelings matter ♡</h2>
+</section>
+
+<!-- PAGE 8: MEMORY GALLERY -->
+<section id="gallery" class="page">
+ <h1>Memory Gallery 📷</h1>
+ <p>Collect little moments worth remembering.</p>
+ <div class="card">
+  <input type="file" id="photoInput" accept="image/*">
+  <input id="photoCaption" placeholder="Add a memory caption">
+  <button onclick="addPhoto()">Save Memory</button>
+ </div>
+ <div id="photoGallery" class="grid" style="margin-top:20px"></div>
+ <p class="small">Photos are stored locally in this browser. Large images may exceed browser storage.</p>
+</section>
+
+<!-- PAGE 9: SURPRISE CORNER -->
+<section id="surprise" class="page center">
+ <div class="hero">
+  <div class="emoji">🎁💝</div>
+  <h1>Surprise Corner</h1>
+  <p>A little surprise is waiting for you.</p>
+  <div class="card">
+   <h2 id="surpriseText">Are you ready?</h2>
+   <button onclick="revealSurprise()">Open Your Surprise ✨</button>
+  </div>
+ </div>
+</section>
+
+<!-- PAGE 10: THEME STUDIO -->
+<section id="settings" class="page">
+ <h1>Theme Studio 🎨</h1>
+ <p>All Demon Slayer characters are included. Each person can save a different character theme on this browser.</p>
+
+ <div class="card">
+  <h2>Choose whose world you are styling</h2>
+  <div class="profile-switch">
+   <button id="profile1" class="active" onclick="setProfile(1)">Person 1</button>
+   <button id="profile2" class="secondary" onclick="setProfile(2)">Person 2</button>
+  </div>
+  <p id="profileHint" class="small">You are editing Person 1's personal theme.</p>
+ </div>
+
+ <div class="actions" style="justify-content:space-between">
+  <h2>Character Library</h2>
+  <button class="secondary" onclick="randomCharacter()">🎲 Random Character</button>
+ </div>
+ <div id="characterGrid" class="grid"></div>
+
+ <div class="card" style="margin-top:18px">
+  <h2>Personal Colours</h2>
+  <label>Primary colour</label>
+  <input type="color" id="customColor" value="#e7b85c" onchange="customTheme(this.value)">
+  <label>Background colour</label>
+  <input type="color" id="customBg" value="#17121c" onchange="customBackground(this.value)">
+  <div class="actions">
+   <button onclick="toggleEffects()" class="secondary">Toggle Falling Petals 🌸</button>
+   <button onclick="toggleAmbience()" class="secondary">Toggle Light / Dark</button>
+   <button onclick="resetTheme()">Reset This Profile</button>
+  </div>
+  <p class="small">Character choice is saved separately for Person 1 and Person 2 on this browser. This is a visual profile switch, not separate secure accounts.</p>
+ </div>
+
+ <div class="card" style="margin-top:18px">
+  <h2>Motion & ambience</h2>
+  <label for="motionLevel">Animation intensity</label>
+  <select id="motionLevel" onchange="setMotion(this.value)">
+   <option value="normal">Normal</option>
+   <option value="soft">Soft</option>
+   <option value="off">Reduced / Off</option>
+  </select>
+  <p class="small">Reduced motion respects comfort and accessibility.</p>
+ </div>
+</section>
+
+</main>
+
+<footer>Made with ♡ in our little secret universe · Yoru no Kakurega</footer>
+
+<!-- MUSIC PLAYER -->
+<div id="music">
+ <span>🏮 Infinity Castle music</span>
+ <button id="musicButton" onclick="toggleMusic()">▶</button>
+ <button onclick="changeVolume(-10)">−</button>
+ <button onclick="changeVolume(10)">+</button>
+ <button id="muteButton" onclick="muteMusic()">🔊</button>
+</div>
+
+<iframe id="musicFrame" title="YouTube music player"
+ allow="autoplay; encrypted-media"
+ referrerpolicy="strict-origin-when-cross-origin"
+ src="https://www.youtube.com/embed/2NihzptRjto?enablejsapi=1&loop=1&playlist=2NihzptRjto"></iframe>
+
+<div class="petals" id="petals"></div>
+<div id="toast" role="status"></div>
+
+<script>
+const pages=['welcome','gate','dashboard','chat','letters','jar','mood','gallery','surprise','settings'];
+
+function showPage(id){
+ pages.forEach(p=>document.getElementById(p).classList.toggle('active',p===id));
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function unlock(){
+ const ok=document.getElementById('secretCode').value==='KAKUREGA02';
+ document.getElementById('gateMessage').textContent=
+  ok?'The castle welcomes you ♡':'Incorrect secret code. Try again.';
+ if(ok)showPage('dashboard');
+}
+
+/* DEMON SLAYER CHARACTER LIBRARY */
+const characters=[
+ ['Tanjiro Kamado','🌿',['#a8c58b','#263a2d','#171f1b','#fff4e7']],
+ ['Nezuko Kamado','🎀',['#f3a6c2','#79425c','#281923','#fff1f5']],
+ ['Zenitsu Agatsuma','⚡',['#f4c84b','#bd772e','#261b13','#fff7df']],
+ ['Inosuke Hashibira','🐗',['#91a9c1','#526b81','#18232e','#f0f5fa']],
+ ['Kanao Tsuyuri','🦋',['#c9a6dc','#72558c','#211a2b','#fff5ff']],
+ ['Genya Shinazugawa','🌑',['#8b8da8','#41445e','#171923','#f5f3ff']],
+ ['Giyu Tomioka','🌊',['#80b9c5','#345d70','#14232b','#effbff']],
+ ['Shinobu Kocho','🦋',['#bda4e8','#735e9e','#211b31','#fff5ff']],
+ ['Kyojuro Rengoku','🔥',['#f2a04a','#a84332','#291714','#fff2df']],
+ ['Tengen Uzui','💎',['#d8b7d2','#80617e','#241c2b','#fff5fa']],
+ ['Mitsuri Kanroji','💗',['#f3a5b8','#9c526c','#2a1924','#fff2f6']],
+ ['Muichiro Tokito','☁️',['#9bc9c8','#477d7c','#172727','#efffff']],
+ ['Gyomei Himejima','🪨',['#c4a987','#76634d','#29231d','#fff8ec']],
+ ['Obanai Iguro','🐍',['#a8b5a0','#56664e','#1d241d','#f4fff0']],
+ ['Sanemi Shinazugawa','🍃',['#b8c7a1','#61764d','#1d261b','#f7fff0']],
+ ['Sakonji Urokodaki','天',['#8aa9bd','#4c687e','#17232d','#f1f8ff']],
+ ['Jigoro Kuwajima','⚡',['#e2bd69','#8e6b36','#292015','#fff7e4']],
+ ['Kanae Kocho','🌸',['#e8b2c7','#9d6685','#2a1b29','#fff4fa']],
+ ['Aoi Kanzaki','💠',['#9bc8d4','#4b7888','#18262c','#f0fcff']],
+ ['Murata','🗡️',['#b6a9a0','#75675e','#241f1d','#fff8f1']],
+ ['Muzan Kibutsuji','🩸',['#c77c86','#71313e','#210f17','#fff0f1']],
+ ['Kokushibo','🌙',['#b78c9b','#70404e','#21131b','#fff0f4']],
+ ['Doma','❄️',['#a6c8d8','#557d9a','#17232e','#f2fbff']],
+ ['Akaza','🥊',['#e58a9e','#9b435c','#28131d','#fff1f4']],
+ ['Hantengu','👁️',['#a9a0bd','#655c79','#201d2b','#f6f1ff']],
+ ['Gyokko','🏺',['#83c5c2','#397f7e','#142727','#efffff']],
+ ['Daki','🎐',['#e8a2c5','#9a507e','#2a1727','#fff2f8']],
+ ['Gyutaro','☠️',['#a2a77b','#5d633c','#202318','#f8ffe9']],
+ ['Rui','🕸️',['#d4c6dc','#83718f','#211d28','#fff8ff']],
+ ['Enmu','💤',['#a9a2d6','#665b9c','#1d1a2c','#f7f3ff']],
+ ['Kaigaku','⚡',['#9b8fc4','#5d4d8c','#1c182b','#f5f0ff']],
+ ['Nakime','琵',['#b49b9e','#755b63','#21191e','#fff5f5']],
+ ['Tamayo','🌹',['#d5a0b1','#8a596d','#281a22','#fff4f7']],
+ ['Yushiro','🎴',['#9eaaad','#59696e','#1b2427','#f1fafa']],
+ ['Chachamaru','🐈',['#d7b77c','#8d7144','#292115','#fff8e8']],
+ ['Kagaya Ubuyashiki','🕊️',['#d4c4b2','#827263','#27211c','#fff9ef']],
+ ['Amane Ubuyashiki','🌼',['#d9b7c8','#8d687c','#281d27','#fff5fa']],
+ ['Hinatsuru','🎀',['#e5b5c8','#93677c','#291e27','#fff5fa']],
+ ['Makio','🌺',['#e6a77f','#a15f48','#2b1b18','#fff3eb']],
+ ['Suma','💧',['#a8c9df','#5e809c','#1b2530','#f1f9ff']],
+ ['Susamaru','毬',['#d69b9e','#91565c','#29191c','#fff3f3']],
+ ['Yahaba','👁️',['#b7a9c8','#71617e','#211d2a','#f9f4ff']],
+ ['Kyogai','🥁',['#b99b83','#79604e','#241d18','#fff7ef']],
+ ['Hand Demon','👹',['#b9a0a0','#765b5b','#251a1a','#fff4f4']],
+ ['Swamp Demon','🌫️',['#91aaa5','#526d68','#192522','#f0faf7']],
+ ['Spider Mother','🕷️',['#d5b6c6','#8b687c','#271d27','#fff5fa']],
+ ['Spider Father','🕸️',['#b6a18f','#776351','#241e19','#fff8ef']],
+ ['Spider Brother','🕷️',['#a7b7ad','#5d7466','#1c2720','#f2fff5']],
+ ['Spider Sister','🦋',['#c6a9d6','#80648e','#241d2b','#fff5ff']],
+ ['Aoba Hashibira','🌱',['#a8c9a2','#5d8059','#1b271a','#f4fff1']]
+];
+
+let activeProfile=1;
+let chatPerson=1;
+let petalsOn=true;
+let lightMode=false;
+let volume=70;
+let muted=false;
+let playing=false;
+
+const profileKey=p=>'yoruProfile'+p;
+
+function profile(p){
+ try{
+  return JSON.parse(localStorage.getItem(profileKey(p)))||
+   {character:p===1?'Zenitsu Agatsuma':'Nezuko Kamado',primary:null,bg:null};
+ }catch(e){
+  return {character:'Zenitsu Agatsuma'};
+ }
+}
+
+function setProfile(p){
+ activeProfile=p;
+ document.getElementById('profile1').classList.toggle('active',p===1);
+ document.getElementById('profile2').classList.toggle('active',p===2);
+ document.getElementById('profileHint').textContent=
+  "You are editing Person "+p+"'s personal theme.";
+ renderCharacters();
+ applyProfile();
+}
+
+function saveProfile(data){
+ localStorage.setItem(profileKey(activeProfile),JSON.stringify(data));
+}
+
+function selectedCharacter(){
+ return profile(activeProfile).character;
+}
+
+function applyProfile(){
+ const pr=profile(activeProfile);
+ const c=characters.find(x=>x[0]===pr.character)||characters[2];
+ const t=c[2];
+ const vals=[pr.primary||t[0],t[1],pr.bg||t[2],t[3]];
+
+ ['--primary','--secondary','--bg','--text'].forEach((v,i)=>
+  document.documentElement.style.setProperty(v,vals[i])
+ );
+
+ document.body.style.background=
+  `radial-gradient(ellipse at top,${vals[1]}66,transparent 55%),linear-gradient(135deg,${vals[2]},#17121c)`;
+
+ document.getElementById('dashCharacter').textContent=c[1]+' '+c[0];
+ document.getElementById('customColor').value=pr.primary||t[0];
+ document.getElementById('customBg').value=pr.bg||t[2];
+}
+
+function renderCharacters(){
+ const chosen=selectedCharacter();
+ document.getElementById('characterGrid').innerHTML=characters.map((c,i)=>`
+  <div class="card character-card ${chosen===c[0]?'selected':''}">
+   <div class="character-icon">${c[1]}</div>
+   <h3>${c[0]}</h3>
+   <button class="small-btn" onclick="chooseCharacter(${i})">
+    ${chosen===c[0]?'Selected ✓':'Use this theme'}
+   </button>
+  </div>
+ `).join('');
+}
+
+function chooseCharacter(i){
+ const pr=profile(activeProfile);
+ pr.character=characters[i][0];
+ saveProfile(pr);
+ applyProfile();
+ renderCharacters();
+ toast(characters[i][0]+' theme saved for Person '+activeProfile+' ♡');
+}
+
+function randomCharacter(){
+ chooseCharacter(Math.floor(Math.random()*characters.length));
+}
+
+function customTheme(c){
+ const pr=profile(activeProfile);
+ pr.primary=c;
+ saveProfile(pr);
+ applyProfile();
+}
+
+function customBackground(c){
+ const pr=profile(activeProfile);
+ pr.bg=c;
+ saveProfile(pr);
+ applyProfile();
+}
+
+function resetTheme(){
+ localStorage.removeItem(profileKey(activeProfile));
+ applyProfile();
+ renderCharacters();
+ toast('Profile theme reset ♡');
+}
+
+/* CHAT */
+function setChatPerson(p){
+ chatPerson=p;
+ document.getElementById('chatP1').classList.toggle('active',p===1);
+ document.getElementById('chatP2').classList.toggle('active',p===2);
+}
+
+function readList(k){
+ try{return JSON.parse(localStorage.getItem(k)||'[]')}
+ catch(e){return []}
+}
+
+function sendMessage(){
+ const input=document.getElementById('chatInput');
+ const text=input.value.trim();
+ if(!text)return;
+
+ const list=readList('yoruMessages');
+ list.push({text,person:chatPerson,time:new Date().toLocaleString()});
+ localStorage.setItem('yoruMessages',JSON.stringify(list));
+ input.value='';
+ renderMessages();
+}
+
+function renderMessages(){
+ document.getElementById('messages').innerHTML=
+  readList('yoruMessages').map(m=>`
+   <div class="bubble ${m.person===chatPerson?'mine':''}">
+    ${escapeHTML(m.text)}
+    <small>Person ${m.person} · ${escapeHTML(m.time)}</small>
+   </div>
+  `).join('');
+}
+
+function clearChat(){
+ if(confirm('Clear all chat messages saved in this browser?')){
+  localStorage.removeItem('yoruMessages');
+  renderMessages();
+ }
+}
+
+function escapeHTML(s){
+ return String(s).replace(/[&<>"']/g,c=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ }[c]));
+}
+
+/* SECRET LETTERS */
+function saveLetter(){
+ const title=document.getElementById('letterTitle').value.trim();
+ const body=document.getElementById('letterBody').value.trim();
+ const from=document.getElementById('letterFrom').value;
+
+ if(!title||!body)return toast('Write your letter first ♡');
+
+ const list=readList('yoruLetters');
+ list.push({title,body,from});
+ localStorage.setItem('yoruLetters',JSON.stringify(list));
+
+ document.getElementById('letterTitle').value='';
+ document.getElementById('letterBody').value='';
+ renderLetters();
+ toast('Your letter is sealed 💌');
+}
+
+function renderLetters(){
+ document.getElementById('letterShelf').innerHTML=
+  readList('yoruLetters').map((l,i)=>`
+   <div class="card letter">
+    <h3>${escapeHTML(l.title)}</h3>
+    <p>${escapeHTML(l.from)}</p>
+    <button onclick="openLetter(${i})">Open Letter 💌</button>
+   </div>
+  `).join('')||'<p>No letters yet. Write the first one ♡</p>';
+}
+
+function openLetter(i){
+ const l=readList('yoruLetters')[i];
+ if(l)alert(l.title+'\n\n'+l.body+'\n\n— '+l.from);
+}
+
+/* QUESTION JAR */
+const questions={
+ fun:[
+  'If you could have any superpower, what would it be?',
+  'What is your funniest childhood memory?',
+  'If we were anime characters, who would we be?',
+  'What food could you eat every day?',
+  'What silly thing makes you happy?',
+  'Which Demon Slayer breathing style would you choose?'
+ ],
+ deep:[
+  'What does happiness mean to you?',
+  'What is something you wish people understood about you?',
+  'What is your biggest dream?',
+  'What makes you feel truly appreciated?',
+  'What is one thing you want to improve about yourself?'
+ ],
+ memories:[
+  'What is your favourite memory with me?',
+  'Which day would you love to relive?',
+  'What was your first impression of me?',
+  'What little moment made you smile recently?',
+  'What is a memory you never want to forget?'
+ ]
+};
+
+function pickQuestion(){
+ const c=document.getElementById('questionCategory').value;
+ const pool=c==='all'?Object.values(questions).flat():questions[c];
+ document.getElementById('questionText').textContent=
+  pool[Math.floor(Math.random()*pool.length)];
+}
+
+/* MOOD GARDEN */
+function chooseMood(m,e){
+ document.getElementById('moodResult').textContent=
+  e+' Your mood today: '+m+'. Take care of yourself ♡';
+}
+
+/* SURPRISE CORNER */
+const surprises=[
+ 'You make ordinary moments feel special. 💗',
+ 'A little reminder: you are doing better than you think. 🌸',
+ 'May your dreams be bigger than your fears. ✨',
+ 'Today deserves a little smile from you. 🌻',
+ 'Some people make the world feel warmer. ♡',
+ 'Even the longest night gives way to morning. 🌅'
+];
+
+function revealSurprise(){
+ document.getElementById('surpriseText').textContent=
+  surprises[Math.floor(Math.random()*surprises.length)];
+}
+
+/* MEMORY GALLERY */
+function addPhoto(){
+ const file=document.getElementById('photoInput').files[0];
+ const caption=document.getElementById('photoCaption').value.trim();
+
+ if(!file)return toast('Choose a picture first.');
+ if(file.size>1.5*1024*1024)return toast('Please choose an image under 1.5 MB.');
+
+ const reader=new FileReader();
+ reader.onload=()=>{
+  const list=readList('yoruPhotos');
+  list.push({src:reader.result,caption});
+
+  try{
+   localStorage.setItem('yoruPhotos',JSON.stringify(list));
+   renderPhotos();
+   toast('Memory saved ♡');
+  }catch(e){
+   toast('Browser storage is full. Try a smaller photo.');
+  }
+ };
+ reader.readAsDataURL(file);
+}
+
+function renderPhotos(){
+ document.getElementById('photoGallery').innerHTML=
+  readList('yoruPhotos').map((p,i)=>`
+   <div class="card">
+    <img class="gallery-img" src="${p.src}" alt="Saved memory">
+    <p>${escapeHTML(p.caption||'A little memory ♡')}</p>
+    <button class="secondary small-btn" onclick="deletePhoto(${i})">Delete</button>
+   </div>
+  `).join('');
+}
+
+function deletePhoto(i){
+ const list=readList('yoruPhotos');
+ list.splice(i,1);
+ localStorage.setItem('yoruPhotos',JSON.stringify(list));
+ renderPhotos();
+}
+
+/* SMALL NOTIFICATIONS */
+function toast(msg){
+ const el=document.getElementById('toast');
+ el.textContent=msg;
+ el.classList.add('show');
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>el.classList.remove('show'),2300);
+}
+
+/* VISUAL EFFECTS */
+function toggleEffects(){
+ petalsOn=!petalsOn;
+ toast(petalsOn?'Falling petals on 🌸':'Falling petals off');
+}
+
+function toggleAmbience(){
+ lightMode=!lightMode;
+ document.body.classList.toggle('light',lightMode);
+ toast(lightMode?'Soft light ambience':'Night ambience');
+}
+
+function setMotion(v){
+ document.querySelectorAll('.page').forEach(x=>{
+  x.style.animationDuration=v==='off'?'0.01ms':v==='soft'?'.2s':'.45s';
+ });
+}
+
+function spawnPetal(){
+ if(!petalsOn||document.hidden)return;
+ const el=document.createElement('span');
+ el.className='petal';
+ el.textContent=['🌸','✿','❀'][Math.floor(Math.random()*3)];
+ el.style.left=Math.random()*100+'vw';
+ el.style.fontSize=(10+Math.random()*14)+'px';
+ el.style.animationDuration=(7+Math.random()*7)+'s';
+ document.getElementById('petals').appendChild(el);
+ setTimeout(()=>el.remove(),15000);
+}
+setInterval(spawnPetal,1200);
+
+/* YOUTUBE MUSIC PLAYER */
+function yt(func,args=[]){
+ document.getElementById('musicFrame').contentWindow.postMessage(
+  JSON.stringify({event:'command',func,args}),
+  'https://www.youtube.com'
+ );
+}
+
+function toggleMusic(){
+ if(!playing){
+  yt('playVideo');
+  playing=true;
+  document.getElementById('musicButton').textContent='Ⅱ';
+ }else{
+  yt('pauseVideo');
+  playing=false;
+  document.getElementById('musicButton').textContent='▶';
+ }
+}
+
+function changeVolume(n){
+ volume=Math.max(0,Math.min(100,volume+n));
+ yt('setVolume',[volume]);
+ toast('Volume: '+volume+'%');
+}
+
+function muteMusic(){
+ muted=!muted;
+ yt(muted?'mute':'unMute');
+ document.getElementById('muteButton').textContent=muted?'🔇':'🔊';
+}
+
+/* INITIALISE */
+setProfile(1);
+renderMessages();
+renderLetters();
+renderPhotos();
+</script>
+
+</body>
+</html>
